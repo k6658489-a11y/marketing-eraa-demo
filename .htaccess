@@ -1,0 +1,7 @@
+# Block access to generator inputs and automation metadata on Hostinger Apache/LiteSpeed.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^(data|tools|\.github)(/|$) - [F,L,NC]
+RewriteRule ^(README\.md|\.gitignore)$ - [F,L,NC]
+</IfModule>
+Options -Indexes
