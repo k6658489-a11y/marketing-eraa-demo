@@ -1,29 +1,46 @@
-name: Generate Marketing Eraa demos
+name: Build approved Marketing Eraa website concepts
 on:
-  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'data/prospects.csv'
-      - 'tools/build.py'
+      - 'tools/**'
+      - '.github/workflows/generate-demos.yml'
+      - 'tests/**'
+  workflow_dispatch:
+
 permissions:
   contents: write
+
+concurrency:
+  group: marketing-eraa-demo-build-main
+  cancel-in-progress: false
+
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Generate static demo pages
-        run: python tools/build.py
-      - name: Commit generated demos
+      - name: Validate generator
+        run: python -m unittest discover -s tests -v
+      - name: Generate static previews
+        run: |
+          mkdir -p uae uk usa
+          python tools/build.py
+      - name: Commit only generated website pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add uae uk usa
-          if ! git diff --cached --quiet; then
-            git commit -m "Generate approved prospect demo pages"
-            git push
+          git add -A -- uae/ uk/ usa/
+          if git diff --cached --quiet; then
+            echo "No preview changes to commit"
+          else
+            git commit -m "Generate approved website concepts"
+            git push origin HEAD:main
           fi

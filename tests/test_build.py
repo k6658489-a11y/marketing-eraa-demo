@@ -33,3 +33,27 @@ class BuildTests(unittest.TestCase):
             self.assertFalse((root/'uk'/'other'/'index.html').exists())
 
 if __name__=='__main__':unittest.main()
+
+class PremiumDesignTests(unittest.TestCase):
+    def test_all_target_sectors_are_premium(self):
+        samples = [
+            ('barber', 'A fresh look.'),
+            ('shoe repair', 'Good things'),
+            ('clothing alterations', 'Feel the fit.'),
+            ('cleaning service', 'A better space.'),
+        ]
+        for industry, phrase in samples:
+            with self.subTest(industry=industry):
+                out = render_page({'country':'uae','slug':'preview-test','business_name':'TEST BUSINESS', 'city':'Dubai', 'industry':industry, 'services':'One; Two; Three','headline':''})
+                self.assertIn(phrase,out)
+                self.assertIn('UNOFFICIAL CONCEPT PREVIEW',out)
+                self.assertIn('data-demo-version=',out)
+                self.assertEqual(out.count('<section '),8)
+                self.assertIn('images.unsplash.com',out)
+                self.assertNotIn('@@',out)
+                self.assertNotIn('<form',out)
+
+    def test_escapes_user_data(self):
+        out = render_page({'country':'uk','slug':'safe-preview','business_name':'<script>alert(1)</script>', 'city':'Leeds & York', 'industry':'barber', 'services':'One; Two', 'headline':''})
+        self.assertNotIn('<script>alert(1)</script>',out)
+        self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt;',out)
