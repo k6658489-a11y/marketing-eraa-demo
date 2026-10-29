@@ -1,0 +1,17 @@
+MARKETING ERAA - FIRST-TIME INSTALLATION (DO THIS ONCE)
+
+1. Extract this ZIP.
+2. Open GitHub Desktop and clone github.com/k6658489-a11y/marketing-eraa-demo (main).
+3. Copy the EXTRACTED CONTENTS into the cloned repo ROOT. Merge/replace the existing files; do not put them inside an extra folder.
+4. Review for secrets/private data, Commit and Push to main.
+5. Confirm GitHub Actions is green and Hostinger auto-deployment is enabled on the demo subdomain only.
+6. Open your MASTER Google Sheet -> Extensions -> Apps Script -> Code.gs.
+7. Back up the old Code.gs, then REPLACE it with apps-script/Code.gs from this ZIP. Keep the GITHUB_TOKEN Script Property.
+8. Save, run testConnections, then previewApprovedDemos (should show 4 approved rows).
+9. Run syncApprovedDemos. Confirm GitHub Actions and Hostinger deployment.
+10. Run verifyPublishedDemos. URLs are added to the Sheet ONLY once verified live.
+11. Run installAutomation once. Future approved leads auto-sync and verify ~every 15 min.
+
+READ README.md FOR IMPORTANT SECURITY NOTES, TROUBLESHOOTING AND ROLLBACK.
+
+Do not announce the four demo links as live until the exact links are verified by the check function.
